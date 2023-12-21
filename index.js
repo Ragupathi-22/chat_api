@@ -19,8 +19,9 @@ app.use(passport.initialize());
 const jwt = require("jsonwebtoken");
 
 mongoose.connect(
-    "mongodb+srv://ragupathi:ragupathi06@cluster0.w57jrrs.mongodb.net/",
+    // "mongodb+srv://ragupathi:ragupathi06@cluster0.w57jrrs.mongodb.net/",
         //  "mongodb://127.0.0.1:27017/swiftchat",
+        "mongodb+srv://ragupathi:ragupathi06@cluster0.w57jrrs.mongodb.net/?retryWrites=true&w=majority",
     {
         useNewUrlParser: true,
         useUnifiedTopology: true
