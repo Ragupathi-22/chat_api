@@ -5,11 +5,9 @@ const passport = require("passport");
 const localStrategy = require("passport-local").Strategy;
 const cors = require("cors");
 const path = require('path');
-const axios = require('axios');
 const app = express();
 const port = 8000;
 const bodyParser = require("body-parser");
-const fetch = require('node-fetch');
 app.use(cors());
 
 
