@@ -5,10 +5,11 @@ const passport = require("passport");
 const localStrategy = require("passport-local").Strategy;
 const cors = require("cors");
 const path = require('path');
-
+const axios = require('axios');
 const app = express();
 const port = 8000;
 const bodyParser = require("body-parser");
+const fetch = require('node-fetch');
 app.use(cors());
 
 
@@ -43,33 +44,37 @@ const multer = require("multer");
 
 
 
-const stor=multer.diskStorage({
-    destination:function(req,file,cb){
-        cb(null,'dpImg/')  //specifies the desired destination folder
-    },
-    filename:function (req,file,cb){
-        //Generate the unique filename for the uploaded image
-        const uniqueSuffix=Date.now() +'-' + Math.round(Math.random() *1E9);
-        cb(null,uniqueSuffix+ '-'+ file.originalname) 
-    }
-})
+// const stor=multer.diskStorage({
+//     destination:function(req,file,cb){
+//         cb(null,'dpImg/')  //specifies the desired destination folder
+//     },
+//     filename:function (req,file,cb){
+//         //Generate the unique filename for the uploaded image
+//         const uniqueSuffix=Date.now() +'-' + Math.round(Math.random() *1E9);
+//         cb(null,uniqueSuffix+ '-'+ file.originalname) 
+//     }
+// })
 
-const dpImgLoad = multer({ storage: stor })
+// const dpImgLoad = multer({ storage: stor })
+
+// const stor = multer.memoryStorage(); // Store file in memory as a buffer
+
+// const dpImgLoad = multer({ storage: stor });
 
 
-//end point for register the user
+// end point for register the user
 
-app.post('/register',dpImgLoad.single('dpImg'), (req, res) => {
+app.post('/register', async(req, res) => {
 
-    const { name, email, password } = req.body;
+    const { name, email, password ,image} = req.body;
     
-
     //create the new user object
     const newUser = new User(
                       { name,
                         email,
                         password,   
-                        image:req.file.path !='' ? req.file.path :null});
+                        image:image,
+                    });
                         
     //save the user to the database
     newUser.save().then(() => {
@@ -79,6 +84,8 @@ app.post('/register',dpImgLoad.single('dpImg'), (req, res) => {
         res.status(500).json({ Message: 'error register the user' })
     })
 })
+
+
 
 app.use('/dpImg',express.static(path.join(__dirname, 'dpImg')));
 
@@ -249,7 +256,7 @@ app.post("/messages",upload.single('imageFile'), async(req,res) => {
                              messageType,
                              message,
                              timestamp: new Date(),
-                             imageUrl: messageType === 'image' ? req.file.path :null
+                             imageUrl: messageType === 'image' ? req.file.path!=''?req.file.path:null :null
         })
 
         await newMessage.save();
