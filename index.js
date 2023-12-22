@@ -375,7 +375,6 @@ app.get("/log-user/:userId",async(req,res)=>{
         const {userId}=req.params;
         const response=await User.findById(userId)
         res.status(200).json(response)
-        console.log(response)
     }
     catch(error){
         console.log("error in getting log-user",error)
