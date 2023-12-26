@@ -85,7 +85,7 @@ app.post('/register', async(req, res) => {
 
 
 
-app.use('/dpImg',express.static(path.join(__dirname, 'dpImg')));
+// app.use('/dpImg',express.static(path.join(__dirname, 'dpImg')));
 
 //function for create the token for the user
 
