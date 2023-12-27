@@ -18,7 +18,7 @@ app.use(passport.initialize());
 const jwt = require("jsonwebtoken");
 
 mongoose.connect(
-    // "mongodb+srv://ragupathi:ragupathi06@cluster0.w57jrrs.mongodb.net/",
+        // "mongodb+srv://ragupathi:ragupathi06@cluster0.w57jrrs.mongodb.net/", 
         //  "mongodb://127.0.0.1:27017/swiftchat",
         "mongodb+srv://ragupathi:ragupathi06@cluster0.w57jrrs.mongodb.net/?retryWrites=true&w=majority",
     {
@@ -230,33 +230,35 @@ app.get("/accepted-friends/:userId", async (req, res) => {
         res.status(500).json({ message: "Internal server error" })
     }
 })
-const storage=multer.diskStorage({
-    destination:function(req,file,cb){
-        cb(null,'files/')  //specifies the desired destination folder
-    },
-    filename:function (req,file,cb){
-        //Generate the unique filename for the uploaded image
-        const uniqueSuffix=Date.now() +'-' + Math.round(Math.random() *1E9);
-        cb(null,uniqueSuffix+ '-'+ file.originalname) 
-    }
-})
+// const storage=multer.diskStorage({
+//     destination:function(req,file,cb){
+//         cb(null,'files/')  //specifies the desired destination folder
+//     },
+//     filename:function (req,file,cb){
+//         //Generate the unique filename for the uploaded image
+//         const uniqueSuffix=Date.now() +'-' + Math.round(Math.random() *1E9);
+//         cb(null,uniqueSuffix+ '-'+ file.originalname) 
+//     }
+// })
 
-const upload = multer({ storage: storage })
+// const upload = multer({ storage: storage })
 
 //end point to post message and store it in the backend
 
-app.post("/messages",upload.single('imageFile'), async(req,res) => {
+app.post("/messages", async(req,res) => {
     try {
-        const { senderId, recepientId, messageType, message } = req.body;
+   
+        const { senderId, recepientId, messageType, message,imageFile} = req.body;
+    
         const newMessage = new Message({
                              senderId,
                              recepientId,
                              messageType,
                              message,
                              timestamp: new Date(),
-                             imageUrl: messageType === 'image' ? req.file.path!=''?req.file.path:null :null
+                             imageUrl: messageType === 'image' ? imageFile!=''?imageFile:null :null
         })
-
+          console.log(newMessage)
         await newMessage.save();
 
         res.status(200).json({ message: "message sent successfully" })
@@ -270,7 +272,7 @@ app.post("/messages",upload.single('imageFile'), async(req,res) => {
 
 
 // Serve static files from the 'files' folder
-app.use('/files', express.static(path.join(__dirname, 'files')));
+// app.use('/files', express.static(path.join(__dirname, 'files')));
 
 
 
